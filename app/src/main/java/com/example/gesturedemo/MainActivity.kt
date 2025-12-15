@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -32,12 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.IntOffset
 import com.example.gesturedemo.ui.theme.GestureDemoTheme
 import kotlin.math.roundToInt
@@ -60,26 +66,28 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    ScrollableModifier(modifier)
+    ScrollModifiers(modifier)
 }
 @Composable
-fun ScrollableModifier(modifier: Modifier = Modifier) {
-    var offset by remember { mutableStateOf(0f) }
-    Box(
-        modifier
-            .fillMaxSize()
-            .scrollable(
-                orientation = Orientation.Vertical,
-                state = rememberScrollableState { distance ->
-                    offset += distance
-                    distance
-                }
+fun ScrollModifiers(modifier: Modifier = Modifier) {
+    val image = ImageBitmap.imageResource(id = R.drawable.vacation)
+    Box(modifier = modifier
+        .size(150.dp)
+        .verticalScroll(rememberScrollState())
+        .horizontalScroll(rememberScrollState())) {
+        Canvas(
+            modifier = Modifier
+                .size(360.dp, 270.dp)
+        )
+        {
+            drawImage(
+                image = image,
+                topLeft = Offset(
+                    x = 0f,
+                    y = 0f
+                ),
             )
-    ) {
-        Box(modifier = Modifier
-            .size(90.dp)
-            .offset { IntOffset(0, offset.roundToInt()) }
-            .background(Color.Red))
+        }
     }
 }
 
